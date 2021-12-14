@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import telran.b7a.forum.dto.ContentDto;
+import telran.b7a.forum.dto.DateRangeDto;
 import telran.b7a.forum.dto.MessageDto;
 import telran.b7a.forum.dto.PostBodyDto;
 import telran.b7a.forum.service.ForumService;
@@ -60,6 +61,16 @@ public class ForumController {
 	@GetMapping("/posts/author/{author}")
 	public List<ContentDto> FindPostsByAuthor(@PathVariable String author) {
 		return forumService.findPostsByAuthor(author);
+	}
+	
+	@PostMapping("/posts/tags")
+	public List<ContentDto> findPostsByTags(@RequestBody List<String> tags) {
+		return forumService.findPostsByTags(tags);
+	}
+	
+	@PostMapping("/posts/period")
+	public List<ContentDto> findPostsByPeriod(@RequestBody DateRangeDto dates) {
+		return forumService.findPostsByPeriod(dates);
 	}
 	
 }

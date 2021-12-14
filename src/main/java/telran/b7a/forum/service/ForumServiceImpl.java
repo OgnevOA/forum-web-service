@@ -2,6 +2,7 @@ package telran.b7a.forum.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import telran.b7a.forum.dao.ForumMongoRepository;
 import telran.b7a.forum.dto.ContentDto;
+import telran.b7a.forum.dto.DateRangeDto;
 import telran.b7a.forum.dto.MessageDto;
 import telran.b7a.forum.dto.PostBodyDto;
 import telran.b7a.forum.dto.exception.PostNotFoundException;
@@ -54,7 +56,7 @@ public class ForumServiceImpl implements ForumService {
 		Post post = forumRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
 		post.setTitle(postBody.getTitle());
 		post.setContent(postBody.getContent());
-		post.setTags(postBody.getTags());
+		post.addTags(postBody.getTags());
 		forumRepository.save(post);
 		return modelMapper.map(post, ContentDto.class);
 	}
@@ -79,7 +81,24 @@ public class ForumServiceImpl implements ForumService {
 
 	@Override
 	public List<ContentDto> findPostsByAuthor(String author) {
-		return forumRepository.findPostsByAuthor(author);
+		return forumRepository.findPostsByAuthor(author)
+								.map(p -> modelMapper.map(p, ContentDto.class))
+								.collect(Collectors.toList());
 	}
+
+	@Override
+	public List<ContentDto> findPostsByTags(List<String> tags) {
+		return forumRepository.findPostsByTags(tags)
+								.map(p -> modelMapper.map(p, ContentDto.class))
+								.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ContentDto> findPostsByPeriod(DateRangeDto date) {
+		return forumRepository.findByDateCreatedBetween(date.dateTimeFrom(), date.dateTimeTo())
+								.map(p -> modelMapper.map(p, ContentDto.class))
+								.collect(Collectors.toList());
+	}
+	
 
 }

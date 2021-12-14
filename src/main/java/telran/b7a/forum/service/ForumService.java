@@ -3,6 +3,7 @@ package telran.b7a.forum.service;
 import java.util.List;
 
 import telran.b7a.forum.dto.ContentDto;
+import telran.b7a.forum.dto.DateRangeDto;
 import telran.b7a.forum.dto.MessageDto;
 import telran.b7a.forum.dto.PostBodyDto;
 
@@ -20,5 +21,9 @@ public interface ForumService {
 	ContentDto addComent(String id, String author, MessageDto message);
 
 	List<ContentDto> findPostsByAuthor(String author);
+	
+	List<ContentDto> findPostsByTags(List<String> tags);
+	
+	List<ContentDto> findPostsByPeriod(DateRangeDto data);
 
 }

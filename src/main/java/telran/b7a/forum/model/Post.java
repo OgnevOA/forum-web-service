@@ -41,4 +41,8 @@ public class Post {
 	public boolean removeTag(String tag) {
 		return tags.remove(tag);
 	}
+	
+	public void addTags(Set<String> tags) {
+		this.tags.addAll(tags);
+	}
 }
