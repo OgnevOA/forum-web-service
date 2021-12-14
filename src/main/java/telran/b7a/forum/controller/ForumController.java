@@ -2,6 +2,7 @@ package telran.b7a.forum.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import telran.b7a.forum.dto.ContentDto;
+import telran.b7a.forum.dto.MessageDto;
 import telran.b7a.forum.dto.PostBodyDto;
 import telran.b7a.forum.service.ForumService;
 
@@ -18,6 +20,11 @@ import telran.b7a.forum.service.ForumService;
 public class ForumController {
 	ForumService forumService;
 	
+	@Autowired
+	public ForumController(ForumService forumService) {
+		this.forumService = forumService;
+	}
+
 	@PostMapping("/forum/post/{author}")
 	public ContentDto addPost(@PathVariable String author,@RequestBody PostBodyDto post) {
 		return forumService.addPost(author, post);
@@ -44,7 +51,7 @@ public class ForumController {
 	}
 	
 	@PutMapping("/forum/post/{id}/comment/{author}")
-	public ContentDto addComent(@PathVariable String id,@PathVariable String author,@RequestBody String message) {
+	public ContentDto addComent(@PathVariable String id,@PathVariable String author,@RequestBody MessageDto message) {
 		return forumService.addComent(id, author, message);
 	}
 	

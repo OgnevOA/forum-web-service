@@ -7,9 +7,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
 @Getter
+@Setter
 @EqualsAndHashCode(of = { "user", "dateCreated" })
 public class Comment {
 	String user;

@@ -3,6 +3,7 @@ package telran.b7a.forum.service;
 import java.util.List;
 
 import telran.b7a.forum.dto.ContentDto;
+import telran.b7a.forum.dto.MessageDto;
 import telran.b7a.forum.dto.PostBodyDto;
 
 public interface ForumService {
@@ -14,9 +15,9 @@ public interface ForumService {
 
 	ContentDto updatePost(String id, PostBodyDto postBody);
 
-	boolean addLike(String id);
+	void addLike(String id);
 
-	ContentDto addComent(String id, String author, String message);
+	ContentDto addComent(String id, String author, MessageDto message);
 
 	List<ContentDto> findPostsByAuthor(String author);
 

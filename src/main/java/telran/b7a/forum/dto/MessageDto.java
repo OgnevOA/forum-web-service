@@ -1,15 +1,11 @@
 package telran.b7a.forum.dto;
 
-import java.time.LocalDateTime;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class CommentDto {
-	String user;
+public class MessageDto {
 	String message;
-	LocalDateTime dateCreated;
-	Integer likes;
+
 }
