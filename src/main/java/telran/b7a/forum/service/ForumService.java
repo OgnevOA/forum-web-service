@@ -7,11 +7,11 @@ import telran.b7a.forum.dto.MessageDto;
 import telran.b7a.forum.dto.PostBodyDto;
 
 public interface ForumService {
-	ContentDto addPost(String author, PostBodyDto post);
+	ContentDto addNewPost(String author, PostBodyDto post);
 
-	ContentDto findPost(String id);
+	ContentDto getPost(String id);
 
-	ContentDto deletePost(String id);
+	ContentDto removePost(String id);
 
 	ContentDto updatePost(String id, PostBodyDto postBody);
 

@@ -1,6 +1,7 @@
 package telran.b7a.forum.model;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -23,7 +24,7 @@ public class Post {
 	LocalDateTime dateCreated;
 	Set<String> tags;
 	int likes;
-	Set<Comment> comments;
+	Set<Comment> comments = new HashSet<>();
 	
 	public void addLike() {
 		likes++;

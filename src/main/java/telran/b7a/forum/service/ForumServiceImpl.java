@@ -1,5 +1,6 @@
 package telran.b7a.forum.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -27,21 +28,22 @@ public class ForumServiceImpl implements ForumService {
 	}
 
 	@Override
-	public ContentDto addPost(String author, PostBodyDto postBody) {
+	public ContentDto addNewPost(String author, PostBodyDto postBody) {
 		Post post = modelMapper.map(postBody, Post.class);
 		post.setAuthor(author);
+		post.setDateCreated(LocalDateTime.now());
 		forumRepository.save(post);
 		return modelMapper.map(post, ContentDto.class);
 	}
 
 	@Override
-	public ContentDto findPost(String id) {
+	public ContentDto getPost(String id) {
 		Post post = forumRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
 		return modelMapper.map(post, ContentDto.class);
 	}
 
 	@Override
-	public ContentDto deletePost(String id) {
+	public ContentDto removePost(String id) {
 		Post post = forumRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
 		forumRepository.deleteById(id);
 		return modelMapper.map(post, ContentDto.class);
@@ -69,6 +71,7 @@ public class ForumServiceImpl implements ForumService {
 		Post post = forumRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
 		Comment comment = modelMapper.map(message, Comment.class);
 		comment.setUser(author);
+		comment.setDateCreated(LocalDateTime.now());
 		post.addComment(comment);
 		forumRepository.save(post);
 		return modelMapper.map(post, ContentDto.class);
@@ -76,8 +79,7 @@ public class ForumServiceImpl implements ForumService {
 
 	@Override
 	public List<ContentDto> findPostsByAuthor(String author) {
-		// TODO Auto-generated method stub
-		return null;
+		return forumRepository.findPostsByAuthor(author);
 	}
 
 }
