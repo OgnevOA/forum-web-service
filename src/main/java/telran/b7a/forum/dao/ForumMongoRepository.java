@@ -13,7 +13,7 @@ public interface ForumMongoRepository extends MongoRepository<Post, String> {
 	
 	public Stream<Post> findPostsByAuthor(String author);
 	
-	@Query("{tags: {$all: ?0}}")
+	@Query("{tags: {$in: ?0}}")
 	public Stream<Post> findPostsByTags(List<String> tags);
 	
 	public Stream<Post> findByDateCreatedBetween(LocalDateTime from, LocalDateTime to);
