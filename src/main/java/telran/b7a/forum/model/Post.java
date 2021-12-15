@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.data.annotation.Id;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.EqualsAndHashCode;
@@ -16,6 +18,7 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode(of = { "id" })
 public class Post {
+	@Id
 	String id;
 	String title;
 	String content;

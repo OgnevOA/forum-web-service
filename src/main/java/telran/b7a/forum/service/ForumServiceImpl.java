@@ -54,9 +54,9 @@ public class ForumServiceImpl implements ForumService {
 	@Override
 	public ContentDto updatePost(String id, PostBodyDto postBody) {
 		Post post = forumRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
-		post.setTitle(postBody.getTitle());
-		post.setContent(postBody.getContent());
-		post.addTags(postBody.getTags());
+		post.setTitle(postBody.getTitleOptional().orElse(post.getTitle()));
+		post.setContent(postBody.getContentOptional().orElse(post.getContent()));
+		post.addTags(postBody.getTagsOptional().orElse(post.getTags()));
 		forumRepository.save(post);
 		return modelMapper.map(post, ContentDto.class);
 	}
