@@ -11,15 +11,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class DateRangeDto {
-	@JsonFormat(pattern = "yyyy-MM-dd")
+
+	@JsonFormat(pattern = "[yyyy-MM-dd][dd-MM-yyyy]")
 	LocalDate dateFrom;
-	@JsonFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "[yyyy-MM-dd][dd-MM-yyyy]")
 	LocalDate dateTo;
-	
+
 	public LocalDateTime dateTimeFrom() {
 		return dateFrom.atStartOfDay();
 	}
-	
+
 	public LocalDateTime dateTimeTo() {
 		return dateTo.atStartOfDay();
 	}

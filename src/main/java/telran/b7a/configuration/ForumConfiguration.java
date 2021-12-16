@@ -1,4 +1,4 @@
-package telran.b7a.forum.configuration;
+package telran.b7a.configuration;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration.AccessLevel;

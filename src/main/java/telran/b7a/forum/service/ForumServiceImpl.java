@@ -88,7 +88,7 @@ public class ForumServiceImpl implements ForumService {
 
 	@Override
 	public List<ContentDto> findPostsByTags(List<String> tags) {
-		return forumRepository.findPostsByTags(tags)
+		return forumRepository.findByTagsIn(tags)
 								.map(p -> modelMapper.map(p, ContentDto.class))
 								.collect(Collectors.toList());
 	}
