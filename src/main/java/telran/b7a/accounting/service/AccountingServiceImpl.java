@@ -6,15 +6,14 @@ import org.springframework.stereotype.Service;
 
 import telran.b7a.accounting.dao.AccountingMongoRepository;
 import telran.b7a.accounting.dto.UpdateUserDto;
-import telran.b7a.accounting.dto.UserCredentialsDto;
-import telran.b7a.accounting.dto.UserNotFoundException;
 import telran.b7a.accounting.dto.UserRegisterDto;
 import telran.b7a.accounting.dto.UserResponseDto;
 import telran.b7a.accounting.dto.UserRolesDto;
+import telran.b7a.accounting.dto.exceptions.UserNotFoundException;
 import telran.b7a.accounting.model.User;
 
 @Service
-public class AccountingServiceImpl implements AccountingService {
+public class AccountingServiceImpl implements UserAccountService {
 	
 	AccountingMongoRepository accRepository;
 	ModelMapper modelMapper;
@@ -33,39 +32,48 @@ public class AccountingServiceImpl implements AccountingService {
 	}
 
 	@Override
-	public UserResponseDto loginUser(UserCredentialsDto userCredentials) {
-		User user = accRepository.findById(userCredentials.getLogin()).orElseThrow(() -> new UserNotFoundException());
+	public UserResponseDto loginUser(String login) {
+		User user = accRepository.findById(login).orElseThrow(() -> new UserNotFoundException());
 		return modelMapper.map(user, UserResponseDto.class);
 	}
 
 	@Override
-	public UserResponseDto deleteUser(String userName) {
-		// TODO Auto-generated method stub
-		return null;
+	public UserResponseDto deleteUser(String login) {
+		User user = accRepository.findById(login).orElseThrow(() -> new UserNotFoundException());
+		accRepository.deleteById(login);
+		return modelMapper.map(user, UserResponseDto.class);
 	}
 
 	@Override
-	public UserResponseDto updateUser(UpdateUserDto user, String userName) {
-		// TODO Auto-generated method stub
-		return null;
+	public UserResponseDto editUser(UpdateUserDto newUserData, String login) {
+		User user = accRepository.findById(login).orElseThrow(() -> new UserNotFoundException());
+		user.setFirstName(newUserData.getFirstNameOptional().orElse(user.getFirstName()));
+		user.setLastName(newUserData.getLastNameOptional().orElse(user.getLastName()));
+		accRepository.save(user);
+		return modelMapper.map(user, UserResponseDto.class);
 	}
 
 	@Override
-	public UserRolesDto addRole(String userName, String role) {
-		// TODO Auto-generated method stub
-		return null;
+	public UserRolesDto addRole(String login, String role) {
+		User user = accRepository.findById(login).orElseThrow(() -> new UserNotFoundException());
+		user.addRole(role);
+		accRepository.save(user);
+		return modelMapper.map(user, UserRolesDto.class);
 	}
 
 	@Override
-	public UserRolesDto deleteRole(String userName, String role) {
-		// TODO Auto-generated method stub
-		return null;
+	public UserRolesDto deleteRole(String login, String role) {
+		User user = accRepository.findById(login).orElseThrow(() -> new UserNotFoundException());
+		user.deleteRole(role);
+		accRepository.save(user);
+		return modelMapper.map(user, UserRolesDto.class);
 	}
 
 	@Override
-	public void changePassword(UserCredentialsDto userCredentials) {
-		// TODO Auto-generated method stub
-
+	public void changePassword(String login, String password) {
+		User user = accRepository.findById(login).orElseThrow(() -> new UserNotFoundException());
+		user.setPassword(password);
+		accRepository.save(user);
 	}
 
 }

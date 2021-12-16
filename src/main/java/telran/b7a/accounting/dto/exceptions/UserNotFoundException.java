@@ -1,4 +1,4 @@
-package telran.b7a.accounting.dto;
+package telran.b7a.accounting.dto.exceptions;
 
 public class UserNotFoundException extends RuntimeException {
 

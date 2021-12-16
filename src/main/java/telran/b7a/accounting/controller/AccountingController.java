@@ -14,15 +14,15 @@ import telran.b7a.accounting.dto.UserCredentialsDto;
 import telran.b7a.accounting.dto.UserRegisterDto;
 import telran.b7a.accounting.dto.UserResponseDto;
 import telran.b7a.accounting.dto.UserRolesDto;
-import telran.b7a.accounting.service.AccountingService;
+import telran.b7a.accounting.service.UserAccountService;
 
 @RestController
 @RequestMapping("/account")
 public class AccountingController {
-	AccountingService accountingService;
+	UserAccountService accountingService;
 
 	@Autowired
-	public AccountingController(AccountingService accountingService) {
+	public AccountingController(UserAccountService accountingService) {
 		this.accountingService = accountingService;
 	}
 	
@@ -33,7 +33,7 @@ public class AccountingController {
 	
 	@PostMapping("/login")
 	public UserResponseDto loginUser(@RequestBody UserCredentialsDto userCredentials) {
-		return accountingService.loginUser(userCredentials);
+		return accountingService.loginUser(userCredentials.getLogin());
 	}
 	
 	@DeleteMapping("/user/{userName}")
@@ -43,22 +43,22 @@ public class AccountingController {
 	
 	@PutMapping("/user/{userName}")
 	public UserResponseDto updateUser(@RequestBody UpdateUserDto user,@PathVariable String userName) {
-		return accountingService.updateUser(user, userName);
+		return accountingService.editUser(user, userName);
 	}
 	
 	@PutMapping("/user/{user}/role/{role}")
-	public UserRolesDto addRole(@PathVariable String userName,@PathVariable String role) {
-		return accountingService.addRole(userName, role);
+	public UserRolesDto addRole(@PathVariable String user,@PathVariable String role) {
+		return accountingService.addRole(user, role);
 	}
 	
 	@DeleteMapping("/user/{user}/role/{role}")
-	public UserRolesDto deleteRole(@PathVariable String userName,@PathVariable String role) {
-		return accountingService.deleteRole(userName, role);
+	public UserRolesDto deleteRole(@PathVariable String user,@PathVariable String role) {
+		return accountingService.deleteRole(user, role);
 	}
 	
 	@PutMapping("/user/password")
 	public void changePassword(@RequestBody UserCredentialsDto userCredentials) {
-		accountingService.changePassword(userCredentials);
+		accountingService.changePassword(userCredentials.getLogin(), userCredentials.getPassword());
 	}
 	
 	
