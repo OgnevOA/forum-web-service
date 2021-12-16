@@ -26,6 +26,7 @@ public class User {
 	
 	public User() {
 		roles = new HashSet<>();
+		addRole("User");
 	}
 	
 	public Set<String> addRole(String role) {
