@@ -8,7 +8,7 @@ import telran.b7a.accounting.dto.UserRolesDto;
 public interface UserAccountService {
 	UserResponseDto regiserNewUser(UserRegisterDto userInfo);
 	
-	UserResponseDto loginUser(String login);
+	UserResponseDto getUser(String login);
 	
 	UserResponseDto deleteUser(String userName);
 	

@@ -33,7 +33,7 @@ public class AccountingController {
 	
 	@PostMapping("/login")
 	public UserResponseDto loginUser(@RequestBody UserCredentialsDto userCredentials) {
-		return accountingService.loginUser(userCredentials.getLogin());
+		return accountingService.getUser(userCredentials.getLogin());
 	}
 	
 	@DeleteMapping("/user/{userName}")

@@ -9,6 +9,7 @@ import telran.b7a.accounting.dto.UpdateUserDto;
 import telran.b7a.accounting.dto.UserRegisterDto;
 import telran.b7a.accounting.dto.UserResponseDto;
 import telran.b7a.accounting.dto.UserRolesDto;
+import telran.b7a.accounting.dto.exceptions.UserAlreadyExistsException;
 import telran.b7a.accounting.dto.exceptions.UserNotFoundException;
 import telran.b7a.accounting.model.User;
 
@@ -26,13 +27,17 @@ public class AccountingServiceImpl implements UserAccountService {
 
 	@Override
 	public UserResponseDto regiserNewUser(UserRegisterDto userInfo) {
+		if (accRepository.existsById(userInfo.getLogin())) {
+			throw new UserAlreadyExistsException();
+		}
 		User user = modelMapper.map(userInfo, User.class);
+		user.addRole("USER");
 		accRepository.save(user);
 		return modelMapper.map(user, UserResponseDto.class);
 	}
 
 	@Override
-	public UserResponseDto loginUser(String login) {
+	public UserResponseDto getUser(String login) {
 		User user = accRepository.findById(login).orElseThrow(() -> new UserNotFoundException());
 		return modelMapper.map(user, UserResponseDto.class);
 	}
@@ -56,7 +61,7 @@ public class AccountingServiceImpl implements UserAccountService {
 	@Override
 	public UserRolesDto addRole(String login, String role) {
 		User user = accRepository.findById(login).orElseThrow(() -> new UserNotFoundException());
-		user.addRole(role);
+		user.addRole(role.toUpperCase());
 		accRepository.save(user);
 		return modelMapper.map(user, UserRolesDto.class);
 	}
