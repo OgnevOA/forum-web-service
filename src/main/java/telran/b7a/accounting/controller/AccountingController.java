@@ -1,11 +1,14 @@
 package telran.b7a.accounting.controller;
 
+import java.util.Base64;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,8 +35,13 @@ public class AccountingController {
 	}
 	
 	@PostMapping("/login")
-	public UserResponseDto loginUser(@RequestBody UserCredentialsDto userCredentials) {
-		return accountingService.getUser(userCredentials.getLogin());
+	public UserResponseDto loginUser(@RequestHeader("Authorization") String token) {
+		token = token.split(" ")[1];
+		byte[] bytesDecode = Base64.getDecoder().decode(token);
+		token = new String(bytesDecode);
+		System.out.println(token);
+		String[] credentials = token.split(":");
+		return accountingService.getUser(credentials[0]);
 	}
 	
 	@DeleteMapping("/user/{userName}")

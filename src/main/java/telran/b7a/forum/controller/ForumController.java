@@ -47,7 +47,7 @@ public class ForumController {
 	
 	@PutMapping("/post/{id}")
 	public ContentDto updatePost(@PathVariable String id,@RequestBody PostBodyDto postBody) {
-		return forumService.updatePost(id, postBody);
+		return forumService.updatePost(postBody, id);
 	}
 	
 	@PutMapping("/post/{id}/like")
@@ -58,7 +58,7 @@ public class ForumController {
 	
 	@PutMapping("/post/{id}/comment/{author}")
 	public ContentDto addComent(@PathVariable String id,@PathVariable String author,@RequestBody MessageDto message) {
-		return forumService.addComent(id, author, message);
+		return forumService.addComent(author, message, id);
 	}
 	
 	@GetMapping("/posts/author/{author}")

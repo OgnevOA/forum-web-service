@@ -16,6 +16,7 @@ import telran.b7a.forum.dto.PostBodyDto;
 import telran.b7a.forum.dto.exception.PostNotFoundException;
 import telran.b7a.forum.model.Comment;
 import telran.b7a.forum.model.Post;
+import telran.b7a.forum.service.logging.PostLogger;
 
 @Service
 public class ForumServiceImpl implements ForumService {
@@ -52,7 +53,8 @@ public class ForumServiceImpl implements ForumService {
 	}
 
 	@Override
-	public ContentDto updatePost(String id, PostBodyDto postBody) {
+	@PostLogger
+	public ContentDto updatePost(PostBodyDto postBody, String id) {
 		Post post = forumRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
 		post.setTitle(postBody.getTitleOptional().orElse(post.getTitle()));
 		post.setContent(postBody.getContentOptional().orElse(post.getContent()));
@@ -62,6 +64,7 @@ public class ForumServiceImpl implements ForumService {
 	}
 
 	@Override
+	@PostLogger
 	public void addLike(String id) {
 		Post post = forumRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
 		post.addLike();
@@ -69,7 +72,8 @@ public class ForumServiceImpl implements ForumService {
 	}
 
 	@Override
-	public ContentDto addComent(String id, String author, MessageDto message) {
+	@PostLogger
+	public ContentDto addComent(String author, MessageDto message, String id) {
 		Post post = forumRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
 		Comment comment = modelMapper.map(message, Comment.class);
 		comment.setUser(author);
@@ -82,15 +86,15 @@ public class ForumServiceImpl implements ForumService {
 	@Override
 	public List<ContentDto> findPostsByAuthor(String author) {
 		return forumRepository.findPostsByAuthor(author)
-								.map(p -> modelMapper.map(p, ContentDto.class))
-								.collect(Collectors.toList());
+				.map(p -> modelMapper.map(p, ContentDto.class))
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public List<ContentDto> findPostsByTags(List<String> tags) {
 		return forumRepository.findByTagsIn(tags)
-								.map(p -> modelMapper.map(p, ContentDto.class))
-								.collect(Collectors.toList());
+				.map(p -> modelMapper.map(p, ContentDto.class))
+				.collect(Collectors.toList());
 	}
 
 	@Override

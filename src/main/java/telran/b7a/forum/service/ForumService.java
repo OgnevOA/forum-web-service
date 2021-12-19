@@ -14,11 +14,11 @@ public interface ForumService {
 
 	ContentDto removePost(String id);
 
-	ContentDto updatePost(String id, PostBodyDto postBody);
+	ContentDto updatePost(PostBodyDto postBody, String id);
 
 	void addLike(String id);
 
-	ContentDto addComent(String id, String author, MessageDto message);
+	ContentDto addComent(String author, MessageDto message, String id);
 
 	List<ContentDto> findPostsByAuthor(String author);
 	
