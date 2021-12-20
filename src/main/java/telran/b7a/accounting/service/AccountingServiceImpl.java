@@ -1,5 +1,6 @@
 package telran.b7a.accounting.service;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,8 @@ public class AccountingServiceImpl implements UserAccountService {
 			throw new UserAlreadyExistsException();
 		}
 		User user = modelMapper.map(userInfo, User.class);
+		String password = BCrypt.hashpw(userInfo.getPassword(), BCrypt.gensalt());
+		user.setPassword(password);
 		user.addRole("USER");
 		accRepository.save(user);
 		return modelMapper.map(user, UserResponseDto.class);
@@ -77,7 +80,7 @@ public class AccountingServiceImpl implements UserAccountService {
 	@Override
 	public void changePassword(String login, String password) {
 		User user = accRepository.findById(login).orElseThrow(() -> new UserNotFoundException());
-		user.setPassword(password);
+		user.setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
 		accRepository.save(user);
 	}
 
