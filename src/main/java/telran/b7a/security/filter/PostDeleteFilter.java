@@ -15,19 +15,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
-import telran.b7a.accounting.dao.AccountingMongoRepository;
+import telran.b7a.forum.dao.ForumMongoRepository;
+import telran.b7a.forum.model.Post;
 import telran.b7a.security.SecurityContext;
 import telran.b7a.security.UserProfile;
 
 @Service
-@Order(20)
-public class AdminFilter implements Filter {
-	AccountingMongoRepository repository;
+@Order(40)
+public class PostDeleteFilter implements Filter {
+
+	ForumMongoRepository forumRepository;
 	SecurityContext securityContext;
 
 	@Autowired
-	public AdminFilter(AccountingMongoRepository repository, SecurityContext securityContext) {
-		this.repository = repository;
+	public PostDeleteFilter(ForumMongoRepository forumRepository, SecurityContext securityContext) {
+		this.forumRepository = forumRepository;
 		this.securityContext = securityContext;
 	}
 
@@ -40,18 +42,24 @@ public class AdminFilter implements Filter {
 		if (principal != null) {
 			UserProfile user = securityContext.getUser(principal.getName());
 			if (checkEndPoints(request.getServletPath(), request.getMethod())) {
-				if (!user.getRoles().contains("Administrator".toUpperCase())) {
-					response.sendError(403);
+				String[] uriStrings = request.getRequestURI().split("/");
+				String postId = uriStrings[uriStrings.length-1];
+				Post post = forumRepository.findById(postId).orElse(null);
+				if (post == null) {
+					response.sendError(404, "Post not found");
+					return;
+				}
+				if (!((post.getAuthor().equals(user.getLogin())) || user.getRoles().contains("MODERATOR"))) {
+					response.sendError(403, "You can not delete this post");
 					return;
 				}
 			}
 		}
 		chain.doFilter(request, response);
-
 	}
-
+	
 	private boolean checkEndPoints(String path, String method) {
-		return path.matches("[/]account[/]user[/]\\w+[/]role[/]\\w+[/]?");
+		return method.equalsIgnoreCase("Delete") && path.matches("[/]forum[/]post[/]\\w+[/]?");
 	}
 
 }

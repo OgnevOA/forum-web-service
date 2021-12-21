@@ -15,20 +15,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
-import telran.b7a.accounting.dao.AccountingMongoRepository;
-import telran.b7a.security.SecurityContext;
-import telran.b7a.security.UserProfile;
+import telran.b7a.forum.dao.ForumMongoRepository;
+import telran.b7a.forum.model.Post;
 
 @Service
-@Order(20)
-public class AdminFilter implements Filter {
-	AccountingMongoRepository repository;
-	SecurityContext securityContext;
+@Order(40)
+public class PostUpdateFilter implements Filter {
+
+	ForumMongoRepository forumRepository;
 
 	@Autowired
-	public AdminFilter(AccountingMongoRepository repository, SecurityContext securityContext) {
-		this.repository = repository;
-		this.securityContext = securityContext;
+	public PostUpdateFilter(ForumMongoRepository forumRepository) {
+		this.forumRepository = forumRepository;
 	}
 
 	@Override
@@ -38,20 +36,25 @@ public class AdminFilter implements Filter {
 		HttpServletResponse response = (HttpServletResponse) resp;
 		Principal principal = request.getUserPrincipal();
 		if (principal != null) {
-			UserProfile user = securityContext.getUser(principal.getName());
 			if (checkEndPoints(request.getServletPath(), request.getMethod())) {
-				if (!user.getRoles().contains("Administrator".toUpperCase())) {
-					response.sendError(403);
+				String[] uriStrings = request.getRequestURI().split("/");
+				String postId = uriStrings[uriStrings.length - 1];
+				Post post = forumRepository.findById(postId).orElse(null);
+				if (post == null) {
+					response.sendError(404, "Post not found");
+					return;
+				}
+				if (!post.getAuthor().equals(principal.getName())) {
+					response.sendError(403, "You can not edit this post");
 					return;
 				}
 			}
 		}
 		chain.doFilter(request, response);
-
 	}
 
 	private boolean checkEndPoints(String path, String method) {
-		return path.matches("[/]account[/]user[/]\\w+[/]role[/]\\w+[/]?");
+		return method.equalsIgnoreCase("Put") && path.matches("[/]forum[/]post[/]\\w+[/]?");
 	}
 
 }
