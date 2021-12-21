@@ -28,13 +28,25 @@ public class User {
 		roles = new HashSet<>();
 	}
 	
+	
+	
 	public Set<String> addRole(String role) {
-		roles.add(role);
+		roles.add(role.toUpperCase());
 		return new HashSet<String>(roles);
 	}
 	
 	public Set<String> deleteRole(String role) {
 		roles.remove(role);
 		return new HashSet<String>(roles);
+	}
+
+
+
+	public User(String login, String password, String firstName, String lastName) {
+		this();
+		this.login = login;
+		this.password = password;
+		this.firstName = firstName;
+		this.lastName = lastName;
 	}
 }

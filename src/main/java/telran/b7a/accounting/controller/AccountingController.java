@@ -58,10 +58,9 @@ public class AccountingController {
 		return accountingService.deleteRole(user, role);
 	}
 	
-	@PutMapping("/password")
+	@PutMapping("/user/password")
 	public void changePassword(@RequestBody UserCredentialsDto userCredentials) {
 		accountingService.changePassword(userCredentials.getLogin(), userCredentials.getPassword());
 	}
-	
 	
 }
