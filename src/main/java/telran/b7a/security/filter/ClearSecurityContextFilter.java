@@ -11,12 +11,21 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
+import telran.b7a.security.SecurityContext;
+
 @Service
-@Order(30)
-public class AccountActionsPostCommentFilter implements Filter {
+@Order(1000)
+public class ClearSecurityContextFilter implements Filter {
+	SecurityContext securityContext;
+
+	@Autowired
+	public ClearSecurityContextFilter(SecurityContext securityContext) {
+		this.securityContext = securityContext;
+	}
 
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
@@ -25,23 +34,10 @@ public class AccountActionsPostCommentFilter implements Filter {
 		HttpServletResponse response = (HttpServletResponse) resp;
 		Principal principal = request.getUserPrincipal();
 		if (principal != null) {
-			if (checkEndPoints(request.getServletPath(), request.getMethod())) {
-				String[] uriStrings = request.getRequestURI().split("/");
-				String name = uriStrings[uriStrings.length-1];
-				if (!(principal.getName().equalsIgnoreCase(name))) {
-					response.sendError(403);
-					return;
-				}
-			}
+			securityContext.removeUser(principal.getName());
 		}
 		chain.doFilter(request, response);
 
-	}
-
-	private boolean checkEndPoints(String path, String method) {
-		return 		path.matches("[/]account[/]user[/]\\w+[/]?") 
-				|| (path.matches("[/]forum[/]post[/]\\w+[/]?") && "Post".equalsIgnoreCase(method))
-				||	path.matches("[/]forum[/]post[/]\\w+[/]comment[/]\\w+[/]?");
 	}
 
 }

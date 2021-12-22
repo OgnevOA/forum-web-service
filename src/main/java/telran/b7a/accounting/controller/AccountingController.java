@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import telran.b7a.accounting.dto.UpdateUserDto;
-import telran.b7a.accounting.dto.UserCredentialsDto;
 import telran.b7a.accounting.dto.UserRegisterDto;
 import telran.b7a.accounting.dto.UserResponseDto;
 import telran.b7a.accounting.dto.UserRolesDto;
@@ -58,9 +58,9 @@ public class AccountingController {
 		return accountingService.deleteRole(user, role);
 	}
 	
-	@PutMapping("/user/password")
-	public void changePassword(@RequestBody UserCredentialsDto userCredentials) {
-		accountingService.changePassword(userCredentials.getLogin(), userCredentials.getPassword());
+	@PutMapping("/password")
+	public void changePassword(Principal principal,@RequestHeader("X-Password") String password) {
+		accountingService.changePassword(principal.getName(), password);
 	}
 	
 }
